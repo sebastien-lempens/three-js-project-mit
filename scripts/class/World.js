@@ -2,7 +2,7 @@ import * as THREE from 'three'
 export default class World {
 	constructor() {
 		this.app = window.app
-		this.scene = this.app.scene
+		this.scene = this.app.webgl.scene
 		this.meshes = null
 		this.textures = null
 	}

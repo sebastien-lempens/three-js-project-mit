@@ -3,7 +3,7 @@ import Webgl from './Webgl'
 export default class App {
   constructor() {
     this.debug = false
-    this.xr = false;
+    this.xr = false 
     window.app = this
     this.clock = new THREE.Clock()
     this.timer = null
@@ -13,8 +13,8 @@ export default class App {
     this.initGUI()
     this.initWebgl()
     this.initEventListeners()
-    this.tick()
     this.initHtml()
+
   }
   async initWebgl() {
     this.webgl = new Webgl()
@@ -90,15 +90,20 @@ export default class App {
     }
   }
   async initGUI() {
+    if(this.xr) return;
     const { getTweakPane } = await import('../utils.js')
     this.tweakPane = getTweakPane(this)
     this.tweakPane.containerElem_.style.opacity = this.debug ? 1 : 0
-    const legend = document.createElement('legend');
+    const legend = document.createElement('legend')
     legend.innerHTML = 'play with tweaks?'
     this.tweakPane.containerElem_.append(legend)
-    this.tweakPane.containerElem_.addEventListener('mouseenter',e=>{
-      legend.style.animation = 'fadeOut 1s ease forwards';
-    },{once:true})
+    this.tweakPane.containerElem_.addEventListener(
+      'mouseenter',
+      (e) => {
+        legend.style.animation = 'fadeOut 1s ease forwards'
+      },
+      { once: true }
+    )
     if (this.isMobile) {
       const width = window.innerWidth - 16
       this.tweakPane.containerElem_.style.width = `${width}px`
@@ -107,7 +112,6 @@ export default class App {
     }
   }
   initEventListeners() {
-    this.handlerTick = this.tick.bind(this)
     window.addEventListener('resize', this.resize.bind(this))
   }
   initHtml() {
@@ -144,19 +148,9 @@ export default class App {
       return el
     }
   }
-  tick() {
-   // this.update()
-    //this.raf = window.requestAnimationFrame(this.handlerTick)
-  }
   resize() {
-    if (this.webgl) this.webgl.resize()
-  }
-  update() { 
-    this.timer = this.clock.getElapsedTime()
-    this.webgl && this.webgl.update()
-    this.webgl.effects && this.webgl.effects.update()
-    this.webgl.effects &&
-      this.webgl.effects.animations &&
-      this.webgl.effects.animations.update()
+    if (this.webgl) {
+      this.webgl.resize()
+    }
   }
 }

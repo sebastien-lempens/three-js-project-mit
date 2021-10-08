@@ -28,7 +28,7 @@ import MoonMaterialOnBeforeCompile from '../shaders/meshes/moonOnBeforeCompile.j
 export default class Effects {
   constructor() {
     this.app = window.app
-    this.scene = this.app.scene
+    this.scene = this.app.webgl.scene
     this.camera = this.app.webgl.camera
     this.meshes = this.app.webgl.world.meshes
     this.effectComposer = {}
@@ -76,13 +76,12 @@ export default class Effects {
     this.setShaderMeshPalmtrees()
     this.setShaderMeshMoon()
     this.setShaderScene()
-    this.setAnimations()
   }
   addFog() {
     this.fog.geometry = new THREE.BoxBufferGeometry(0.6, 0.005, 0.5, 1, 1, 1)
     this.fog.material = new THREE.ShaderMaterial({
-      clipping: true,
-      clippingPlanes: this.app.webgl.clippingPlanes,
+      clipping: this.app.xr ? false : true,
+      clippingPlanes: this.app.xr ? [] : this.app.webgl.clippingPlanes,
       uniforms: {
         uTime: { value: this.app.timer },
         uColor: { value: this.scene.background },
@@ -101,8 +100,8 @@ export default class Effects {
     this.flame.geometry = new THREE.PlaneBufferGeometry(0.03, 0.03)
     this.flame.material = new THREE.ShaderMaterial({
       transparent: true,
-      clipping: true,
-      clippingPlanes: this.app.webgl.clippingPlanes,
+      clipping: this.app.xr ? false : true,
+      clippingPlanes: this.app.xr ? [] : this.app.webgl.clippingPlanes,
       uniforms: {
         uTime: { value: this.app.timer },
       },
@@ -187,8 +186,8 @@ export default class Effects {
     )
 
     this.dust.material = new THREE.ShaderMaterial({
-      clipping: true,
-      clippingPlanes: this.app.webgl.clippingPlanes,
+      clipping: this.app.xr ? false : true,
+      clippingPlanes: this.app.xr ? [] : this.app.webgl.clippingPlanes,
       uniforms: {
         uTime: { value: this.app.timer },
         uSize: { value: 0.9 },
@@ -248,10 +247,10 @@ export default class Effects {
      * BloomPass Shader
      */
     const bloomPass = new UnrealBloomPass()
-    ;(bloomPass.strength = this.app.params.scene.effect.bloom.strength),
-      (bloomPass.radius = this.app.params.scene.effect.bloom.radius),
-      (bloomPass.threshold = this.app.params.scene.effect.bloom.threshold),
-      (this.effectComposer.bloomPass = bloomPass)
+    bloomPass.strength = this.app.params.scene.effect.bloom.strength
+    bloomPass.radius = this.app.params.scene.effect.bloom.radius
+    bloomPass.threshold = this.app.params.scene.effect.bloom.threshold
+    this.effectComposer.bloomPass = bloomPass
     /**
      * BokehPass Shader
      */
@@ -342,16 +341,13 @@ export default class Effects {
     //this.app.webgl.composer.addPass(edgeShader)
     this.app.webgl.composer.addPass(sceneRevealPass)
     this.app.webgl.composer.addPass(colorCorrectionShader)
-    this.app.webgl.composer.addPass(bloomPass)
-    this.app.webgl.composer.addPass(bokehPass)
+    if(this.app.xr === false) this.app.webgl.composer.addPass(bloomPass)
+    if(this.app.xr === false) this.app.webgl.composer.addPass(bokehPass)
 
     this.app.effectComposer = this.effectComposer
   }
-  async setAnimations() {
-    const { default: Animations } = await import('./Animation')
-    this.animations = new Animations()
-  }
-  update() { 
+
+  update() {
     if (this.fog.material) {
       this.fog.material.uniforms.uTime.value = this.app.timer
       this.fog.material.uniforms.uColor.value = this.scene.background

@@ -1,10 +1,10 @@
-export default class Animation {
+export default class Animations {
 	constructor() {
 		this.app = window.app
 		this.light1 = this.app.webgl.pointLight
 		this.light2 = this.app.webgl.pointLight2
 		this.meshes = this.app.webgl.world.meshes
-	}
+	} 
 
 	moveLight() {
 		let { x: x1, y: y1, z: z1 } = this.light1.position
