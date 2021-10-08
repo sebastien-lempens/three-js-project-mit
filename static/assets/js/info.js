@@ -12,7 +12,7 @@ infoDiv.innerHTML = `
                 If like me you was a big fan of  "Point & Click" games from the 90's, you probably know the <a href="https://en.wikipedia.org/wiki/Monkey_Island_(series)" target="_blank">Monkey Island Saga</a>! So many hours spent on it... 
             </p>
             <p style="display:inline">
-                Here is my tribute about this game! I hope you will enjoyed it.  <pre style="display:inline">  Sébastien Lempens</pre>
+               I hope you enjoyed it.  <pre style="display:inline">  Sébastien Lempens</pre>
             </p>
         </article>
         <div class="MIT_info__gallery">
